@@ -14,9 +14,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)
         throws Exception {
-        http.authorizeHttpRequests(request ->
+        http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
+                .authorizeHttpRequests(request ->
                 request
                         .requestMatchers("/login", "/resources/**", "/logout").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated()
         ).oauth2Login(oauth ->
                 oauth.loginPage("/login").defaultSuccessUrl("/", true))

@@ -1,0 +1,10 @@
+CREATE TABLE `user_account`(
+    `id_user` BIGINT AUTO_INCREMENT,
+    `username` VARCHAR(80) NOT NULL,
+    `email` VARCHAR(200) NOT NULL,
+    `password` VARCHAR(200) NOT NULL,
+    `created_at` DATETIME NOT NULL,
+    CONSTRAINT PK_USERS_IDUSER PRIMARY KEY (`id_user`),
+    CONSTRAINT UK_USERS_EMAIL UNIQUE (`email`),
+    CONSTRAINT UK_USERS_USERNAME UNIQUE (`username`)
+) ENGINE InnoDB;
