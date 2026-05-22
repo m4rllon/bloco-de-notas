@@ -1,15 +1,11 @@
 package com.notes.demo.controllers;
 
 import com.notes.demo.assemblers.NotesModelAssembler;
-import com.notes.demo.dtos.NotesDTO;
-import com.notes.demo.models.Notes;
-import com.notes.demo.repositories.NotesRepository;
+import com.notes.demo.domain.Notes;
 import com.notes.demo.services.NotesService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 
 import java.util.List;
 

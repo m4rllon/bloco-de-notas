@@ -1,6 +1,6 @@
 package com.notes.demo.assemblers;
 
-import com.notes.demo.models.Notes;
+import com.notes.demo.domain.Notes;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;

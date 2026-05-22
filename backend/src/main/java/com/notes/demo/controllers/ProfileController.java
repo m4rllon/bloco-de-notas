@@ -1,6 +1,6 @@
 package com.notes.demo.controllers;
 
-import com.notes.demo.models.UserProfileResponse;
+import com.notes.demo.domain.user.UserProfileResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

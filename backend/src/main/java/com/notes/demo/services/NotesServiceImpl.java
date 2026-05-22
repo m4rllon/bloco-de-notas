@@ -1,13 +1,11 @@
 package com.notes.demo.services;
 
-import com.notes.demo.dtos.NotesDTO;
-import com.notes.demo.models.Notes;
+import com.notes.demo.domain.Notes;
 import com.notes.demo.repositories.NotesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component

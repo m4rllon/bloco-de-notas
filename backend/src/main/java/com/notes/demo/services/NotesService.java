@@ -1,7 +1,6 @@
 package com.notes.demo.services;
 
-import com.notes.demo.dtos.NotesDTO;
-import com.notes.demo.models.Notes;
+import com.notes.demo.domain.Notes;
 
 import java.util.List;
 

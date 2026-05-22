@@ -1,5 +1,6 @@
-package com.notes.demo.models;
+package com.notes.demo.domain;
 
+import com.notes.demo.domain.user.UserAccount;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
