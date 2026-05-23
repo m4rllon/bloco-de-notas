@@ -1,4 +1,4 @@
-CREATE TABLE `notes`(
+CREATE TABLE IF NOT EXISTS `notes`(
     `id_notes` BIGINT AUTO_INCREMENT,
     `title` TEXT NOT NULL,
     `body` TEXT NOT NULL,

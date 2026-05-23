@@ -1,6 +1,6 @@
 package com.notes.demo.services;
 
-import com.notes.demo.domain.Notes;
+import com.notes.demo.domain.notes.Notes;
 import com.notes.demo.repositories.NotesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

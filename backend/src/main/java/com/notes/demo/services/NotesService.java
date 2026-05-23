@@ -1,6 +1,6 @@
 package com.notes.demo.services;
 
-import com.notes.demo.domain.Notes;
+import com.notes.demo.domain.notes.Notes;
 
 import java.util.List;
 

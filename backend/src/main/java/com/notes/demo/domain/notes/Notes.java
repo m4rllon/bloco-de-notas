@@ -1,4 +1,4 @@
-package com.notes.demo.domain;
+package com.notes.demo.domain.notes;
 
 import com.notes.demo.domain.user.UserAccount;
 import jakarta.persistence.*;

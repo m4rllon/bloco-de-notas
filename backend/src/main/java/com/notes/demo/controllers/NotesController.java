@@ -1,7 +1,7 @@
 package com.notes.demo.controllers;
 
 import com.notes.demo.assemblers.NotesModelAssembler;
-import com.notes.demo.domain.Notes;
+import com.notes.demo.domain.notes.Notes;
 import com.notes.demo.services.NotesService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
