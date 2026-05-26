@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -30,7 +31,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         if(token != null){
             var subject = tokenService.validateToke(token);
             if(!subject.isEmpty()){
-                UserDetails user = userRepository.findByUsername(subject);
+                UserDetails user = userRepository.findByUsername(subject.split(" ")[0]);
+
                 if(user != null){
                     var authentication = new UsernamePasswordAuthenticationToken(user, null,user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);

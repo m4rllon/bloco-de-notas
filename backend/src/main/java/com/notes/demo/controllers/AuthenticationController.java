@@ -33,9 +33,16 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
         // vamos validar se as credenciais estão certas
-        var usernamePassword = new UsernamePasswordAuthenticationToken(
-                data.username(), data.password()); // criptografa a senha
-        var auth = this.authenticationManager.authenticate(usernamePassword); // realiza a autenticação
+        UsernamePasswordAuthenticationToken loginPassword;
+
+        if(data.username() != null)
+            loginPassword = new UsernamePasswordAuthenticationToken(
+                    data.username(), data.password()); // criptografa a senha
+        else
+            loginPassword = new UsernamePasswordAuthenticationToken(
+                    data.email(), data.password()); // criptografa a senha
+
+        var auth = this.authenticationManager.authenticate(loginPassword); // realiza a autenticação
 
         var token = tokenService.generateToken((UserAccount) auth.getPrincipal());
 
@@ -47,6 +54,8 @@ public class AuthenticationController {
         try{
             // primeiro verificamos se existes emails ou usernames igual no banco
             if(this.userRepository.findByUsername(data.username()) != null)
+                return ResponseEntity.badRequest().build();
+            if(this.userRepository.findByEmail(data.email()) != null)
                 return ResponseEntity.badRequest().build();
 
             String encriptedPassword = new BCryptPasswordEncoder().encode(data.password());
