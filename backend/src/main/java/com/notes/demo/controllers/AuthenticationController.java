@@ -4,6 +4,7 @@ import com.notes.demo.domain.user.AuthenticationDTO;
 import com.notes.demo.domain.user.LoginResponseDTO;
 import com.notes.demo.domain.user.RegisterDTO;
 import com.notes.demo.domain.user.UserAccount;
+import com.notes.demo.exception.custom.InvalidCredentialsException;
 import com.notes.demo.repositories.UserRepository;
 import com.notes.demo.services.TokenService;
 import jakarta.validation.Valid;
@@ -33,20 +34,25 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
         // vamos validar se as credenciais estão certas
-        UsernamePasswordAuthenticationToken loginPassword;
+        try{
+            UsernamePasswordAuthenticationToken loginPassword = null;
 
-        if(data.username() != null)
-            loginPassword = new UsernamePasswordAuthenticationToken(
-                    data.username(), data.password()); // criptografa a senha
-        else
-            loginPassword = new UsernamePasswordAuthenticationToken(
-                    data.email(), data.password()); // criptografa a senha
+            if(data.username() != null)
+                loginPassword = new UsernamePasswordAuthenticationToken(
+                        data.username(), data.password()); // criptografa a senha
+            else if(data.email() != null){
+                loginPassword = new UsernamePasswordAuthenticationToken(
+                        data.email(), data.password()); // criptografa a senha
+            }
 
-        var auth = this.authenticationManager.authenticate(loginPassword); // realiza a autenticação
+            var auth = this.authenticationManager.authenticate(loginPassword); // realiza a autenticação
 
-        var token = tokenService.generateToken((UserAccount) auth.getPrincipal());
+            var token = tokenService.generateToken((UserAccount) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+            return ResponseEntity.ok(new LoginResponseDTO(token));
+        } catch (RuntimeException e) {
+            throw new InvalidCredentialsException(e.getMessage());
+        }
     }
 
     @PostMapping("/register")

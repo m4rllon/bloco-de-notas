@@ -1,5 +1,6 @@
 package com.notes.demo.services;
 
+import com.notes.demo.exception.custom.InvalidCredentialsException;
 import com.notes.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,9 +20,12 @@ public class AuthorizationService implements UserDetailsService {
         try{
             UserDetails user = repository.findByUsername(login);
             if(user != null) return user;
-            else return repository.findByEmail(login);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            else {
+                user = repository.findByEmail(login);
+                return user;
+            }
+        } catch (RuntimeException e) {
+            throw new InvalidCredentialsException("E-mail ou senha inválidos." + e.getMessage());
         }
     }
 }
