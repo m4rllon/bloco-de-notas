@@ -1,6 +1,7 @@
 package com.notes.demo.exception.handler;
 
 import com.notes.demo.exception.custom.InvalidCredentialsException;
+import com.notes.demo.exception.custom.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<Object> handleResourceNotFound(InvalidCredentialsException e) {
+    public ResponseEntity<Object> handleInvalidCredentials(InvalidCredentialsException e) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", HttpStatus.UNAUTHORIZED.value());
@@ -23,5 +24,16 @@ public class GlobalExceptionHandler {
 
         // Retorna o JSON com o status HTTP 401
         return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Object> handleUserAlreadyExists(UserAlreadyExistsException e) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT.value());
+        body.put("error", "Unauthorized");
+        body.put("message", e.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
     }
 }

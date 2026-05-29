@@ -5,6 +5,7 @@ import com.notes.demo.domain.user.LoginResponseDTO;
 import com.notes.demo.domain.user.RegisterDTO;
 import com.notes.demo.domain.user.UserAccount;
 import com.notes.demo.exception.custom.InvalidCredentialsException;
+import com.notes.demo.exception.custom.UserAlreadyExistsException;
 import com.notes.demo.repositories.UserRepository;
 import com.notes.demo.services.TokenService;
 import jakarta.validation.Valid;
@@ -56,28 +57,22 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        try{
-            // primeiro verificamos se existes emails ou usernames igual no banco
-            if(this.userRepository.findByUsername(data.username()) != null)
-                return ResponseEntity.badRequest().build();
-            if(this.userRepository.findByEmail(data.email()) != null)
-                return ResponseEntity.badRequest().build();
+    public ResponseEntity register(@RequestBody @Valid RegisterDTO data) {
+        try {
+                String encriptedPassword = new BCryptPasswordEncoder().encode(data.password());
+                UserAccount newUser = new UserAccount(
+                        data.username(),
+                        data.email(),
+                        encriptedPassword, // senha encriptada
+                        LocalDateTime.now(),
+                        data.role()
+                );
 
-            String encriptedPassword = new BCryptPasswordEncoder().encode(data.password());
-            UserAccount newUser = new UserAccount(
-                    data.username(),
-                    data.email(),
-                    encriptedPassword, // senha encriptada
-                    LocalDateTime.now(),
-                    data.role()
-            );
+                this.userRepository.save(newUser);
 
-            this.userRepository.save(newUser);
-
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+                return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            throw new UserAlreadyExistsException(e.getMessage());
         }
     }
 }
