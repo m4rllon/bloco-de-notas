@@ -1,5 +1,6 @@
-package com.notes.demo.infra.security;
+package com.notes.demo.infra.security.config;
 
+import com.notes.demo.infra.security.filters.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

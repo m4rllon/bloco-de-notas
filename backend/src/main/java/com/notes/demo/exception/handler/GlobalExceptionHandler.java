@@ -1,6 +1,7 @@
 package com.notes.demo.exception.handler;
 
 import com.notes.demo.exception.custom.InvalidCredentialsException;
+import com.notes.demo.exception.custom.ProtectedRouteException;
 import com.notes.demo.exception.custom.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +36,16 @@ public class GlobalExceptionHandler {
         body.put("message", e.getMessage());
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(ProtectedRouteException.class)
+    public ResponseEntity<Object> handleProtectedRoute(ProtectedRouteException e){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.UNAUTHORIZED.value());
+        body.put("error", "UNAUTHORIZED");
+        body.put("message", "Protected route!");
+
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 }

@@ -3,8 +3,13 @@ package com.notes.demo.controllers;
 import com.notes.demo.assemblers.NotesModelAssembler;
 import com.notes.demo.domain.notes.Notes;
 import com.notes.demo.services.NotesService;
+import jakarta.validation.Valid;
+import org.aspectj.weaver.ast.Not;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,9 +25,21 @@ public class NotesController {
         this.assembler = assembler;
     }
 
-    @GetMapping("/")
+    @GetMapping()
     public CollectionModel<EntityModel<Notes>> getAllNotes(){
         List<Notes> notesList = notesService.getAllNotes();
+
+        List<EntityModel<Notes>> notesEntityModel = notesList.stream()
+                .map(assembler::toModel)
+                .toList();
+
+        return CollectionModel.of(notesEntityModel);
+    }
+
+    @GetMapping("/{username}")
+    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername()")
+    public CollectionModel<EntityModel<Notes>> getNotesByUser(@PathVariable String username){
+        List<Notes> notesList = notesService.getAllNotesByUsername(username);
 
         List<EntityModel<Notes>> notesEntityModel = notesList.stream()
                 .map(assembler::toModel)

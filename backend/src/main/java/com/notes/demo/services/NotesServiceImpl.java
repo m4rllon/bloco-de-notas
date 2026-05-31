@@ -38,4 +38,14 @@ public class NotesServiceImpl implements NotesService{
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<Notes> getAllNotesByUsername(String username){
+        try{
+            var notesList = notesRepository.findAll();
+            return notesList.stream().filter(note -> note.getUser().getUsername().equals(username)).toList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

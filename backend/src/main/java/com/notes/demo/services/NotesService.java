@@ -8,4 +8,6 @@ public interface NotesService {
 //    Notes createNotes(NotesDTO newNotes);
 
     List<Notes> getAllNotes();
+
+    List<Notes> getAllNotesByUsername(String username);
 }

@@ -1,4 +1,4 @@
-package com.notes.demo.infra.security;
+package com.notes.demo.infra.security.filters;
 
 import com.notes.demo.repositories.UserRepository;
 import com.notes.demo.services.TokenService;
