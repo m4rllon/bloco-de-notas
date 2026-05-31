@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("status", HttpStatus.CONFLICT.value());
-        body.put("error", "Unauthorized");
+        body.put("error", "Conflict");
         body.put("message", e.getMessage());
 
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);

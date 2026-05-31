@@ -72,7 +72,7 @@ public class AuthenticationController {
 
                 return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
-            throw new UserAlreadyExistsException(e.getMessage());
+            throw new UserAlreadyExistsException("Username or email already exists");
         }
     }
 }
