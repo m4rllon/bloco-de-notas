@@ -37,7 +37,7 @@ public class NotesController {
     }
 
     @GetMapping("/{username}")
-    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername()")
+    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername())")
     public CollectionModel<EntityModel<Notes>> getNotesByUser(@PathVariable String username){
         List<Notes> notesList = notesService.getAllNotesByUsername(username);
 
