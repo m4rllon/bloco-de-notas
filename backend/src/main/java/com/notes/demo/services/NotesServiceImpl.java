@@ -7,28 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Slf4j
 public class NotesServiceImpl implements NotesService{
     @Autowired
     private NotesRepository notesRepository;
-
-//    @Override
-//    public Notes createNotes(NotesDTO notesDTO){
-//        try{
-//            Notes newNotes = new Notes(
-//                    notesDTO.getTitle(),
-//                    notesDTO.getBody(),
-//                    1,
-//                    LocalDateTime.now()
-//            );
-//
-//            return notesRepository.save(newNotes);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     @Override
     public List<Notes> getAllNotes(){
@@ -53,6 +38,19 @@ public class NotesServiceImpl implements NotesService{
     public Notes createNotes(Notes newNotes) {
         try{
             return notesRepository.save(newNotes);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deleteNotes(Long notesID, String username) {
+        try{
+            Notes notes = notesRepository.findById(notesID).orElseThrow(RuntimeException::new);
+            if(notes.getUser().getUsername().equals(username)){
+                notesRepository.deleteById(notesID);
+
+            }
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

@@ -68,6 +68,16 @@ public class NotesController {
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    @DeleteMapping("/{username}/{notesID}")
+    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
+    public ResponseEntity<EntityModel<Notes>> deleteNotes(@PathVariable String username, @PathVariable Long notesID){
+        try{
+            notesService.deleteNotes(notesID, username);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
