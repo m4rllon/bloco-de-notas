@@ -10,4 +10,6 @@ public interface NotesService {
     List<Notes> getAllNotes();
 
     List<Notes> getAllNotesByUsername(String username);
+
+    Notes createNotes(Notes newNotes);
 }

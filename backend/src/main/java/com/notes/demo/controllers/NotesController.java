@@ -2,6 +2,7 @@ package com.notes.demo.controllers;
 
 import com.notes.demo.assemblers.NotesModelAssembler;
 import com.notes.demo.domain.notes.Notes;
+import com.notes.demo.dtos.NotesDTO;
 import com.notes.demo.services.NotesService;
 import jakarta.validation.Valid;
 import org.aspectj.weaver.ast.Not;
@@ -10,8 +11,11 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -37,7 +41,7 @@ public class NotesController {
     }
 
     @GetMapping("/{username}")
-    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername())")
+    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
     public CollectionModel<EntityModel<Notes>> getNotesByUser(@PathVariable String username){
         List<Notes> notesList = notesService.getAllNotesByUsername(username);
 
@@ -48,9 +52,22 @@ public class NotesController {
         return CollectionModel.of(notesEntityModel);
     }
 
-//    @PostMapping("/new")
-//    public ResponseEntity<EntityModel<Notes>> createNotes(@Valid @RequestBody NotesDTO newNotesDTO){
-//        Notes newNotes = notesService.createNotes(newNotesDTO);
-//        return ResponseEntity.ok(assembler.toModel(newNotes));
-//    }
+    @PostMapping("/{username}")
+    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
+    public ResponseEntity<EntityModel<Notes>> createNotes(
+            @PathVariable String username, @RequestBody NotesDTO notesDTO, @AuthenticationPrincipal UserDetails currentUser){
+        try{
+            var newNotes = new Notes(
+                    notesDTO.getTitle(),
+                    notesDTO.getBody(),
+                    LocalDateTime.now(),
+                    currentUser
+            );
+            var notes = notesService.createNotes(newNotes);
+            return ResponseEntity.ok(assembler.toModel(notes));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

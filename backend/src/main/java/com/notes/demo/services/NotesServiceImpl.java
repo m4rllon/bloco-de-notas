@@ -44,7 +44,16 @@ public class NotesServiceImpl implements NotesService{
         try{
             var notesList = notesRepository.findAll();
             return notesList.stream().filter(note -> note.getUser().getUsername().equals(username)).toList();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Notes createNotes(Notes newNotes) {
+        try{
+            return notesRepository.save(newNotes);
+        } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }

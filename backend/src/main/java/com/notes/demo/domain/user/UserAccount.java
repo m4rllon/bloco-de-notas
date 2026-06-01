@@ -17,11 +17,7 @@ import java.util.List;
 @Entity
 @Table(name = "user_account")
 public class UserAccount implements UserDetails {
-    @Id // indica que é a PK
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user", nullable = false)
-    private Long idUser;
-
+    @Id
     @Column(name = "username", nullable = false)
     private String username;
 
@@ -36,14 +32,6 @@ public class UserAccount implements UserDetails {
 
     @Column(name = "role", nullable = false)
     private UserRole role;
-
-    public UserAccount(String username, String email, String password, LocalDateTime createdAt, UserRole role) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.createdAt = createdAt;
-        this.role = role;
-    }
 
     @Override
     public String getUsername(){

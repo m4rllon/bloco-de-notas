@@ -32,7 +32,7 @@ public class SecurityConfigurations {
                         //StateFull x StateLess (via token). Aqui usamos a StateLess
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/notes").hasRole("ADMIN")
                         .anyRequest().authenticated()) // quais requisições precisam de autenticação
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component("securityRules")
 public class SecurityRules {
-    public boolean canAccessRoute(String currentUsername, String routeUsername){
-        return currentUsername.equals(routeUsername);
+    public boolean canAccessRoute(String currentUsername, String routeUsername, String authorities){
+        return currentUsername.equals(routeUsername) || authorities.contains("ROLE_ADMIN");
     }
 }
