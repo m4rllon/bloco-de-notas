@@ -80,4 +80,17 @@ public class NotesController {
             throw new RuntimeException(e);
         }
     }
+
+//    IMPLEMENTAR MÉTODO DE PUT!!
+    @PutMapping("/{username}/{notesID}")
+    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
+    public ResponseEntity<EntityModel<Notes>> updateNotes(
+            @PathVariable String username, @PathVariable Long notesID, @RequestBody NotesDTO editedNotes){
+        try {
+            Notes updatedNotes = notesService.updateNotes(username, notesID, editedNotes);
+            return ResponseEntity.ok(assembler.toModel(updatedNotes));
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
