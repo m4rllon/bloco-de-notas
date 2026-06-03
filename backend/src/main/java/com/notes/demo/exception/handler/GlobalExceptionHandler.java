@@ -3,6 +3,7 @@ package com.notes.demo.exception.handler;
 import com.notes.demo.exception.custom.InvalidCredentialsException;
 import com.notes.demo.exception.custom.ProtectedRouteException;
 import com.notes.demo.exception.custom.UserAlreadyExistsException;
+import com.notes.demo.exception.custom.UserWithoutPermissionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,6 +46,17 @@ public class GlobalExceptionHandler {
         body.put("status", HttpStatus.UNAUTHORIZED.value());
         body.put("error", "UNAUTHORIZED");
         body.put("message", "Protected route!");
+
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserWithoutPermissionException.class)
+    public ResponseEntity<Object> handleUserWithoutPermission(UserWithoutPermissionException e){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.UNAUTHORIZED.value());
+        body.put("error", "UNAUTHORIZED");
+        body.put("message", "User without permission.");
 
         return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }

@@ -4,6 +4,7 @@ import com.notes.demo.assemblers.NotesModelAssembler;
 import com.notes.demo.domain.notes.Notes;
 import com.notes.demo.domain.notes.NotesDTO;
 import com.notes.demo.domain.notes.NotesResponse;
+import com.notes.demo.exception.custom.UserWithoutPermissionException;
 import com.notes.demo.services.NotesService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -29,7 +30,7 @@ public class NotesController {
 
     @GetMapping()
     @PreAuthorize("@securityRules.isAdmin(authentication.principal.getAuthorities())")
-    public CollectionModel<EntityModel<NotesResponse>> getAllNotes(){
+    public CollectionModel<EntityModel<NotesResponse>> getAllNotes() {
         List<NotesResponse> notesList = notesService.getAllNotes().stream().map(notes ->
                 new NotesResponse(
                         notes.getIdNotes(),
