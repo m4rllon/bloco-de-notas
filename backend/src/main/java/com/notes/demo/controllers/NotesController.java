@@ -28,6 +28,7 @@ public class NotesController {
     }
 
     @GetMapping()
+    @PreAuthorize("@securityRules.isAdmin(authentication.principal.getAuthorities())")
     public CollectionModel<EntityModel<NotesResponse>> getAllNotes(){
         List<NotesResponse> notesList = notesService.getAllNotes().stream().map(notes ->
                 new NotesResponse(
