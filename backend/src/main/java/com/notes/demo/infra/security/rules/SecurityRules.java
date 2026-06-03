@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component;
 @Component("securityRules")
 public class SecurityRules {
     public boolean canAccessRoute(String currentUsername, String routeUsername, String authorities){
-        return currentUsername.equals(routeUsername) || authorities.contains("ROLE_ADMIN");
+        if (currentUsername.equals(routeUsername) || authorities.contains("ROLE_ADMIN")) return true;
+        throw new UserWithoutPermissionException();
     }
 
     public boolean isAdmin(String authorities){
