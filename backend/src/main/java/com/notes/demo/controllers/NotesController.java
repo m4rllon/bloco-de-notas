@@ -2,11 +2,9 @@ package com.notes.demo.controllers;
 
 import com.notes.demo.assemblers.NotesModelAssembler;
 import com.notes.demo.domain.notes.Notes;
-import com.notes.demo.dtos.NotesDTO;
+import com.notes.demo.domain.notes.NotesDTO;
+import com.notes.demo.domain.notes.NotesResponse;
 import com.notes.demo.services.NotesService;
-import jakarta.validation.Valid;
-import org.aspectj.weaver.ast.Not;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +28,16 @@ public class NotesController {
     }
 
     @GetMapping()
-    public CollectionModel<EntityModel<Notes>> getAllNotes(){
-        List<Notes> notesList = notesService.getAllNotes();
+    public CollectionModel<EntityModel<NotesResponse>> getAllNotes(){
+        List<NotesResponse> notesList = notesService.getAllNotes().stream().map(notes ->
+                new NotesResponse(
+                        notes.getIdNotes(),
+                        notes.getTitle(),
+                        notes.getBody(),
+                        notes.getUser().getUsername()
+                )).toList();
 
-        List<EntityModel<Notes>> notesEntityModel = notesList.stream()
+        List<EntityModel<NotesResponse>> notesEntityModel = notesList.stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -42,10 +46,17 @@ public class NotesController {
 
     @GetMapping("/{username}")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
-    public CollectionModel<EntityModel<Notes>> getNotesByUser(@PathVariable String username){
-        List<Notes> notesList = notesService.getAllNotesByUsername(username);
+    public CollectionModel<EntityModel<NotesResponse>> getNotesByUser(@PathVariable String username){
+        List<NotesResponse> notesList = notesService.getAllNotesByUsername(username).stream().map(
+                notes -> new NotesResponse(
+                        notes.getIdNotes(),
+                        notes.getTitle(),
+                        notes.getBody(),
+                        notes.getUser().getUsername()
+                )
+        ).toList();
 
-        List<EntityModel<Notes>> notesEntityModel = notesList.stream()
+        List<EntityModel<NotesResponse>> notesEntityModel = notesList.stream()
                 .map(assembler::toModel)
                 .toList();
 
@@ -54,7 +65,7 @@ public class NotesController {
 
     @PostMapping("/{username}")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
-    public ResponseEntity<EntityModel<Notes>> createNotes(
+    public ResponseEntity<EntityModel<NotesResponse>> createNotes(
             @PathVariable String username, @RequestBody NotesDTO notesDTO, @AuthenticationPrincipal UserDetails currentUser){
         try{
             var newNotes = new Notes(
@@ -64,7 +75,13 @@ public class NotesController {
                     currentUser
             );
             var notes = notesService.createNotes(newNotes);
-            return ResponseEntity.ok(assembler.toModel(notes));
+            var notesResponse = new NotesResponse(
+                    notes.getIdNotes(),
+                    notes.getTitle(),
+                    notes.getBody(),
+                    notes.getUser().getUsername()
+            );
+            return ResponseEntity.ok(assembler.toModel(notesResponse));
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
@@ -81,14 +98,19 @@ public class NotesController {
         }
     }
 
-//    IMPLEMENTAR MÉTODO DE PUT!!
     @PutMapping("/{username}/{notesID}")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
-    public ResponseEntity<EntityModel<Notes>> updateNotes(
+    public ResponseEntity<EntityModel<NotesResponse>> updateNotes(
             @PathVariable String username, @PathVariable Long notesID, @RequestBody NotesDTO editedNotes){
         try {
-            Notes updatedNotes = notesService.updateNotes(username, notesID, editedNotes);
-            return ResponseEntity.ok(assembler.toModel(updatedNotes));
+            var updatedNotes = notesService.updateNotes(username, notesID, editedNotes);
+            var updatedNotesResponse = new NotesResponse(
+                    updatedNotes.getIdNotes(),
+                    updatedNotes.getTitle(),
+                    updatedNotes.getBody(),
+                    updatedNotes.getUser().getUsername()
+            );
+            return ResponseEntity.ok(assembler.toModel(updatedNotesResponse));
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

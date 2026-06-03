@@ -1,14 +1,13 @@
 package com.notes.demo.services;
 
 import com.notes.demo.domain.notes.Notes;
-import com.notes.demo.dtos.NotesDTO;
+import com.notes.demo.domain.notes.NotesDTO;
 import com.notes.demo.repositories.NotesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -63,8 +62,7 @@ public class NotesServiceImpl implements NotesService{
             Notes notes = notesRepository.findById(notesID).orElseThrow(RuntimeException::new);
             notes.setBody(editedNotes.getBody());
             notes.setTitle(editedNotes.getTitle());
-            Notes newNotes = notesRepository.save(notes);
-            return newNotes;
+            return notesRepository.save(notes);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

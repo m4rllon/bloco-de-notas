@@ -1,16 +1,17 @@
 package com.notes.demo.assemblers;
 
 import com.notes.demo.domain.notes.Notes;
+import com.notes.demo.domain.notes.NotesResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NotesModelAssembler implements RepresentationModelAssembler<Notes, EntityModel<Notes>> {
+public class NotesModelAssembler implements RepresentationModelAssembler<NotesResponse, EntityModel<NotesResponse>> {
     @Override
-    public EntityModel<Notes> toModel(Notes notes) {
+    public EntityModel<NotesResponse> toModel(NotesResponse notes) {
         try{
-            EntityModel<Notes> notesEntityModel = EntityModel.of(
+            EntityModel<NotesResponse> notesEntityModel = EntityModel.of(
                     notes
             );
 
