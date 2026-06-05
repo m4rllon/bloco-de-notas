@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -64,5 +65,27 @@ public class UserAccount implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UserAccount that = (UserAccount) o;
+        return Objects.equals(username, that.username) && Objects.equals(email, that.email) && Objects.equals(createdAt, that.createdAt) && role == that.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, email, createdAt, role);
+    }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" +
+                "createdAt=" + createdAt +
+                ", role=" + role +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                '}';
     }
 }

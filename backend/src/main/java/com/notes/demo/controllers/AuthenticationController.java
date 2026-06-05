@@ -7,6 +7,7 @@ import com.notes.demo.domain.user.UserAccount;
 import com.notes.demo.exception.custom.InvalidCredentialsException;
 import com.notes.demo.exception.custom.UserAlreadyExistsException;
 import com.notes.demo.repositories.UserRepository;
+import com.notes.demo.services.RegisterService;
 import com.notes.demo.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class AuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private UserRepository userRepository;
+    private RegisterService registerService;
     @Autowired
     TokenService tokenService;
 
@@ -59,16 +60,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data) {
         try {
-                String encriptedPassword = new BCryptPasswordEncoder().encode(data.password());
-                UserAccount newUser = new UserAccount(
-                        data.username(),
-                        data.email(),
-                        encriptedPassword, // senha encriptada
-                        LocalDateTime.now(),
-                        data.role()
-                );
-
-                this.userRepository.save(newUser);
+                this.registerService.createUser(data);
 
                 return ResponseEntity.ok().build();
         } catch (RuntimeException e) {

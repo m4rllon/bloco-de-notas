@@ -71,8 +71,8 @@ public class NotesController {
             @PathVariable String username, @RequestBody NotesDTO notesDTO, @AuthenticationPrincipal UserDetails currentUser){
         try{
             var newNotes = new Notes(
-                    notesDTO.getTitle(),
-                    notesDTO.getBody(),
+                    notesDTO.title(),
+                    notesDTO.body(),
                     LocalDateTime.now(),
                     currentUser
             );

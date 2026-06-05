@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -40,5 +41,28 @@ public class Notes {
         this.body = body;
         this.createdAt = createdAt;
         this.user = (UserAccount) user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Notes notes = (Notes) o;
+        return idNotes == notes.idNotes && Objects.equals(title, notes.title) && Objects.equals(body, notes.body) && Objects.equals(user, notes.user) && Objects.equals(createdAt, notes.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idNotes, title, body, user, createdAt);
+    }
+
+    @Override
+    public String toString() {
+        return "Notes{" +
+                "idNotes=" + idNotes +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", user=" + user +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
