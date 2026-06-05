@@ -1,9 +1,6 @@
 package com.notes.demo.exception.handler;
 
-import com.notes.demo.exception.custom.InvalidCredentialsException;
-import com.notes.demo.exception.custom.ProtectedRouteException;
-import com.notes.demo.exception.custom.UserAlreadyExistsException;
-import com.notes.demo.exception.custom.UserWithoutPermissionException;
+import com.notes.demo.exception.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -59,5 +56,16 @@ public class GlobalExceptionHandler {
         body.put("message", "User without permission.");
 
         return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ParamNotBlankException.class)
+    public ResponseEntity<Object> handleParamNotBlank(ParamNotBlankException e){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.NO_CONTENT.value());
+        body.put("error", "NO_CONTENT");
+        body.put("message", e.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
     }
 }

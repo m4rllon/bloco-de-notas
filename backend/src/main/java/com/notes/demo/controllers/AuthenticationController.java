@@ -5,6 +5,7 @@ import com.notes.demo.domain.user.LoginResponseDTO;
 import com.notes.demo.domain.user.RegisterDTO;
 import com.notes.demo.domain.user.UserAccount;
 import com.notes.demo.exception.custom.InvalidCredentialsException;
+import com.notes.demo.exception.custom.ParamNotBlankException;
 import com.notes.demo.exception.custom.UserAlreadyExistsException;
 import com.notes.demo.repositories.UserRepository;
 import com.notes.demo.services.RegisterService;
@@ -63,8 +64,12 @@ public class AuthenticationController {
                 this.registerService.createUser(data);
 
                 return ResponseEntity.ok().build();
+        } catch (UserAlreadyExistsException e) {
+            throw new UserAlreadyExistsException(e.getMessage());
+        } catch (ParamNotBlankException e) {
+            throw new ParamNotBlankException(e.getMessage());
         } catch (RuntimeException e) {
-            throw new UserAlreadyExistsException("Username or email already exists");
+            throw new RuntimeException(e);
         }
     }
 }

@@ -60,8 +60,8 @@ public class NotesServiceImpl implements NotesService{
     public Notes updateNotes(String username, Long notesID, NotesDTO editedNotes){
         try {
             Notes notes = notesRepository.findById(notesID).orElseThrow(RuntimeException::new);
-            notes.setBody(editedNotes.getBody());
-            notes.setTitle(editedNotes.getTitle());
+            notes.setBody(editedNotes.body());
+            notes.setTitle(editedNotes.title());
             return notesRepository.save(notes);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
