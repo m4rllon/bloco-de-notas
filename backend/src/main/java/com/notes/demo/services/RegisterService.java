@@ -8,6 +8,7 @@ import com.notes.demo.exception.custom.UserAlreadyExistsException;
 import com.notes.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -16,14 +17,11 @@ import java.time.LocalDateTime;
 public class RegisterService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public void createUser(RegisterDTO data){
         try{
-            if (data.getUsername() == null || data.getEmail() == null || data.getPassword() == null)
-                throw new ParamNotBlankException(
-                        "All fields must be filled in."
-                );
-
             if(userRepository.findByUsername(data.getUsername()) != null ||
             userRepository.findByEmail(data.getEmail()) != null) {
                 throw new UserAlreadyExistsException(
@@ -31,7 +29,7 @@ public class RegisterService {
                 );
             }
 
-            String encriptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
+            String encriptedPassword = passwordEncoder.encode(data.getPassword());
             UserAccount newUser = new UserAccount(
                     data.getUsername(),
                     data.getEmail(),
@@ -43,10 +41,6 @@ public class RegisterService {
             this.userRepository.save(newUser);
         } catch (UserAlreadyExistsException e) {
             throw new UserAlreadyExistsException(e.getMessage());
-        } catch (ParamNotBlankException e) {
-            throw new ParamNotBlankException(e.getMessage());
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
         }
     }
 }
