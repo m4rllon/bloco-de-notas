@@ -12,7 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthenticationService {
+public class LoginService {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
