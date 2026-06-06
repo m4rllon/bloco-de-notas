@@ -2,13 +2,16 @@ package com.notes.demo.services;
 
 import com.notes.demo.domain.notes.Notes;
 import com.notes.demo.domain.notes.NotesDTO;
+import com.notes.demo.domain.notes.NotesResponse;
 import com.notes.demo.exception.custom.NotesNotExistsException;
 import com.notes.demo.exception.custom.UserWithoutPermissionException;
 import com.notes.demo.repositories.NotesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -36,9 +39,21 @@ public class NotesServiceImpl implements NotesService{
     }
 
     @Override
-    public Notes createNotes(Notes newNotes) {
+    public NotesResponse createNotes(NotesDTO notesDTO, UserDetails currentUser) {
         try{
-            return notesRepository.save(newNotes);
+            var newNotes = new Notes(
+                    notesDTO.title(),
+                    notesDTO.body(),
+                    LocalDateTime.now(),
+                    currentUser
+            );
+            var notes = notesRepository.save(newNotes);
+            return new NotesResponse(
+                    notes.getIdNotes(),
+                    notes.getTitle(),
+                    notes.getBody(),
+                    notes.getUser().getUsername()
+            );
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }

@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +29,7 @@ public class NotesController {
         this.assembler = assembler;
     }
 
-    @GetMapping("/")
+    @GetMapping("/notes/all")
     @PreAuthorize("@securityRules.isAdmin(authentication.principal.getAuthorities())")
     public CollectionModel<EntityModel<NotesResponse>> getAllNotes() {
         List<NotesResponse> notesList = notesService.getAllNotes().stream().map(notes ->
@@ -46,7 +47,7 @@ public class NotesController {
         return CollectionModel.of(notesEntityModel);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/{username}/notes/all")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
     public CollectionModel<EntityModel<NotesResponse>> getNotesByUser(@PathVariable String username){
         List<NotesResponse> notesList = notesService.getAllNotesByUsername(username).stream().map(
@@ -65,31 +66,28 @@ public class NotesController {
         return CollectionModel.of(notesEntityModel);
     }
 
-    @PostMapping("/{username}")
+    @PostMapping("/{username}/notes")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
     public ResponseEntity<EntityModel<NotesResponse>> createNotes(
-            @PathVariable String username, @RequestBody NotesDTO notesDTO, @AuthenticationPrincipal UserDetails currentUser){
+            @PathVariable String username,
+            @RequestBody NotesDTO notesDTO,
+            @AuthenticationPrincipal UserDetails currentUser,
+            UriComponentsBuilder uriComponentsBuilder){
         try{
-            var newNotes = new Notes(
-                    notesDTO.title(),
-                    notesDTO.body(),
-                    LocalDateTime.now(),
-                    currentUser
-            );
-            var notes = notesService.createNotes(newNotes);
-            var notesResponse = new NotesResponse(
-                    notes.getIdNotes(),
-                    notes.getTitle(),
-                    notes.getBody(),
-                    notes.getUser().getUsername()
-            );
-            return ResponseEntity.ok(assembler.toModel(notesResponse));
+            var notesResponse = notesService.createNotes(notesDTO, currentUser);
+
+            var uri = uriComponentsBuilder
+                    .path("/api/users/{username}/notes/{noteId}")
+                    .buildAndExpand(username, notesResponse.id())
+                    .toUri();
+
+            return ResponseEntity.created(uri).build();
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @DeleteMapping("/{username}/{notesID}")
+    @DeleteMapping("/{username}/notes/{notesID}")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
     public ResponseEntity<EntityModel<Notes>> deleteNotes(@PathVariable String username, @PathVariable Long notesID){
         try{
@@ -100,7 +98,7 @@ public class NotesController {
         }
     }
 
-    @PutMapping("/{username}/{notesID}")
+    @PutMapping("/{username}/notes/{notesID}")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
     public ResponseEntity<EntityModel<NotesResponse>> updateNotes(
             @PathVariable String username, @PathVariable Long notesID, @RequestBody NotesDTO editedNotes){
