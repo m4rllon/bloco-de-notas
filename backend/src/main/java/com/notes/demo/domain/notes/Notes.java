@@ -1,6 +1,7 @@
 package com.notes.demo.domain.notes;
 
 import com.notes.demo.domain.user.UserAccount;
+import com.notes.demo.domain.user.UserPrincipal;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,14 +41,18 @@ public class Notes {
         this.title = title;
         this.body = body;
         this.createdAt = createdAt;
-        this.user = (UserAccount) user;
+        this.user = ((UserPrincipal) user).getUserAccount();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Notes notes = (Notes) o;
-        return idNotes == notes.idNotes && Objects.equals(title, notes.title) && Objects.equals(body, notes.body) && Objects.equals(user, notes.user) && Objects.equals(createdAt, notes.createdAt);
+        return idNotes == notes.idNotes
+                && Objects.equals(title, notes.title)
+                && Objects.equals(body, notes.body)
+                && Objects.equals(user, notes.user)
+                && Objects.equals(createdAt, notes.createdAt);
     }
 
     @Override

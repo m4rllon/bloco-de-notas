@@ -3,6 +3,7 @@ package com.notes.demo.services;
 import com.notes.demo.domain.user.AuthenticationDTO;
 import com.notes.demo.domain.user.LoginResponseDTO;
 import com.notes.demo.domain.user.UserAccount;
+import com.notes.demo.domain.user.UserPrincipal;
 import com.notes.demo.exception.custom.InvalidCredentialsException;
 import com.notes.demo.exception.custom.ParamNotBlankException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,9 @@ public class LoginService {
 
             var auth = this.authenticationManager.authenticate(loginPassword); // realiza a autenticação
 
-            var token = tokenService.generateToken((UserAccount) auth.getPrincipal());
+            var principal = (UserPrincipal) auth.getPrincipal();
+
+            var token = tokenService.generateToken(principal.getUsername());
 
             return ResponseEntity.ok(new LoginResponseDTO(token));
         } catch (RuntimeException e) {

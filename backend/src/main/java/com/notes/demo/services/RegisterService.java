@@ -23,7 +23,7 @@ public class RegisterService {
     public void createUser(RegisterDTO data){
         try{
             if(userRepository.findByUsername(data.getUsername()) != null ||
-            userRepository.findByEmail(data.getEmail()) != null) {
+                    userRepository.findByEmail(data.getEmail()) != null) {
                 throw new UserAlreadyExistsException(
                         "Registration failed: User already exists with email or username."
                 );

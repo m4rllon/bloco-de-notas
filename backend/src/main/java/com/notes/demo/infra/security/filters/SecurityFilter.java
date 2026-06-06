@@ -1,5 +1,7 @@
 package com.notes.demo.infra.security.filters;
 
+import com.notes.demo.domain.user.UserAccount;
+import com.notes.demo.domain.user.UserPrincipal;
 import com.notes.demo.repositories.UserRepository;
 import com.notes.demo.services.TokenService;
 import jakarta.servlet.FilterChain;
@@ -30,10 +32,12 @@ public class SecurityFilter extends OncePerRequestFilter {
         if(token != null){
             var subject = tokenService.validateToke(token);
             if(!subject.isEmpty()){
-                UserDetails user = userRepository.findByUsername(subject);
+                UserAccount user = userRepository.findByUsername(subject);
+                UserDetails userDetails = new UserPrincipal(user);
 
                 if(user != null){
-                    var authentication = new UsernamePasswordAuthenticationToken(user, null,user.getAuthorities());
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null,userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
