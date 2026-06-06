@@ -1,6 +1,7 @@
 package com.notes.demo.controllers;
 
 import com.notes.demo.assemblers.NotesModelAssembler;
+import com.notes.demo.domain.notes.ListNotesDTO;
 import com.notes.demo.domain.notes.Notes;
 import com.notes.demo.domain.notes.NotesDTO;
 import com.notes.demo.domain.notes.NotesResponse;
@@ -32,13 +33,7 @@ public class NotesController {
     @GetMapping("/notes/all")
     @PreAuthorize("@securityRules.isAdmin(authentication.principal.getAuthorities())")
     public CollectionModel<EntityModel<NotesResponse>> getAllNotes() {
-        List<NotesResponse> notesList = notesService.getAllNotes().stream().map(notes ->
-                new NotesResponse(
-                        notes.getIdNotes(),
-                        notes.getTitle(),
-                        notes.getBody(),
-                        notes.getUser().getUsername()
-                )).toList();
+        var notesList = notesService.getAllNotes();
 
         List<EntityModel<NotesResponse>> notesEntityModel = notesList.stream()
                 .map(assembler::toModel)
@@ -50,14 +45,7 @@ public class NotesController {
     @GetMapping("/{username}/notes/all")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
     public CollectionModel<EntityModel<NotesResponse>> getNotesByUser(@PathVariable String username){
-        List<NotesResponse> notesList = notesService.getAllNotesByUsername(username).stream().map(
-                notes -> new NotesResponse(
-                        notes.getIdNotes(),
-                        notes.getTitle(),
-                        notes.getBody(),
-                        notes.getUser().getUsername()
-                )
-        ).toList();
+        var notesList = notesService.getNotesByUser(username);
 
         List<EntityModel<NotesResponse>> notesEntityModel = notesList.stream()
                 .map(assembler::toModel)
@@ -76,7 +64,6 @@ public class NotesController {
             throw new RuntimeException(e);
         }
     }
-
 
     @PostMapping("/{username}/notes")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
@@ -99,6 +86,26 @@ public class NotesController {
         }
     }
 
+    @PostMapping("/{username}/notes/all")
+    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
+    public CollectionModel<EntityModel<NotesResponse>> createAllNotes(
+            @PathVariable String username,
+            @RequestBody ListNotesDTO listNotesDTO,
+            @AuthenticationPrincipal UserDetails currentUser,
+            UriComponentsBuilder uriComponentsBuilder){
+        try {
+            var notesResponseList = notesService.createAllNotes(listNotesDTO, currentUser);
+
+            List<EntityModel<NotesResponse>> notesEntityModel = notesResponseList.stream()
+                    .map(assembler::toModel)
+                    .toList();
+
+            return CollectionModel.of(notesEntityModel);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @DeleteMapping("/{username}/notes/{notesID}")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
     public ResponseEntity<EntityModel<Notes>> deleteNotes(@PathVariable String username, @PathVariable Long notesID){
@@ -115,13 +122,7 @@ public class NotesController {
     public ResponseEntity<EntityModel<NotesResponse>> updateNotes(
             @PathVariable String username, @PathVariable Long notesID, @RequestBody NotesDTO editedNotes){
         try {
-            var updatedNotes = notesService.updateNotes(username, notesID, editedNotes);
-            var updatedNotesResponse = new NotesResponse(
-                    updatedNotes.getIdNotes(),
-                    updatedNotes.getTitle(),
-                    updatedNotes.getBody(),
-                    updatedNotes.getUser().getUsername()
-            );
+            var updatedNotesResponse= notesService.updateNotes(notesID, editedNotes);
             return ResponseEntity.ok(assembler.toModel(updatedNotesResponse));
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
