@@ -27,8 +27,7 @@ public class NotesServiceImpl implements NotesService{
     @Override
     public List<Notes> getAllNotesByUsername(String username){
         try{
-            var notesList = notesRepository.findAll();
-            return notesList.stream().filter(note -> note.getUser().getUsername().equals(username)).toList();
+            return notesRepository.findByUserUsername(username);
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
