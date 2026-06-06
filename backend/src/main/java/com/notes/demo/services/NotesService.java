@@ -12,6 +12,8 @@ public interface NotesService {
 
     List<Notes> getAllNotesByUsername(String username);
 
+    NotesResponse getNotesById(String username, Long notesID);
+
     NotesResponse createNotes(NotesDTO notesDTO, UserDetails currentUser);
 
     void deleteNotes(Long notesID, String username);

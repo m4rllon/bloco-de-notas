@@ -39,6 +39,23 @@ public class NotesServiceImpl implements NotesService{
     }
 
     @Override
+    public NotesResponse getNotesById(String username, Long notesID) {
+        try{
+            var notes = notesRepository.findById(notesID).orElse(null);
+            if(notes == null)
+                throw new NotesNotExistsException("Notes not found.");
+            return new NotesResponse(
+                    notes.getIdNotes(),
+                    notes.getTitle(),
+                    notes.getBody(),
+                    username
+            );
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public NotesResponse createNotes(NotesDTO notesDTO, UserDetails currentUser) {
         try{
             var newNotes = new Notes(

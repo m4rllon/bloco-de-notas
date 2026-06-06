@@ -66,6 +66,18 @@ public class NotesController {
         return CollectionModel.of(notesEntityModel);
     }
 
+    @GetMapping("/{username}/notes/{notesID}")
+    @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
+    public EntityModel<NotesResponse> getNotesByID(@PathVariable String username, @PathVariable Long notesID){
+        try {
+            var notesResponse = notesService.getNotesById(username, notesID);
+            return EntityModel.of(notesResponse);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     @PostMapping("/{username}/notes")
     @PreAuthorize("@securityRules.canAccessRoute(#username, authentication.principal.getUsername(), authentication.principal.getAuthorities())")
     public ResponseEntity<EntityModel<NotesResponse>> createNotes(
