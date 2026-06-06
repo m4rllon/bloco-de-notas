@@ -68,4 +68,15 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
     }
+
+    @ExceptionHandler(NotesNotExistsException.class)
+    public ResponseEntity<Object> handleNotesNotExists(NotesNotExistsException e){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.NO_CONTENT.value());
+        body.put("error", "NO_CONTENT");
+        body.put("message", e.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.NO_CONTENT);
+    }
 }

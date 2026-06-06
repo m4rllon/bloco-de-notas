@@ -2,6 +2,8 @@ package com.notes.demo.services;
 
 import com.notes.demo.domain.notes.Notes;
 import com.notes.demo.domain.notes.NotesDTO;
+import com.notes.demo.exception.custom.NotesNotExistsException;
+import com.notes.demo.exception.custom.UserWithoutPermissionException;
 import com.notes.demo.repositories.NotesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +47,16 @@ public class NotesServiceImpl implements NotesService{
     @Override
     public void deleteNotes(Long notesID, String username) {
         try{
-            Notes notes = notesRepository.findById(notesID).orElseThrow(RuntimeException::new);
+            Notes notes = notesRepository.findById(notesID).orElse(null);
+            if(notes == null) throw new NotesNotExistsException("Notes not found.");
             if(notes.getUser().getUsername().equals(username)){
                 notesRepository.deleteById(notesID);
-
             }
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+            else throw new UserWithoutPermissionException();
+        } catch (NotesNotExistsException e) {
+            throw new NotesNotExistsException(e.getMessage());
+        } catch (UserWithoutPermissionException e) {
+            throw new UserWithoutPermissionException();
         }
     }
 
