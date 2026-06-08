@@ -33,8 +33,16 @@ export const theme = {
     },
 
     fonts: {
-        display: '"Fraunces", serif',
-        body: '"Hanken Grotesk", sans-serif'
+        display: {
+            semibold: 'Fraunces_600SemiBold',
+            bold: 'Fraunces_700Bold',
+        },
+        body: {
+            regular: 'HankenGrotesk_400Regular',
+            medium: 'HankenGrotesk_500Medium',
+            semibold: 'HankenGrotesk_600SemiBold',
+            bold: 'HankenGrotesk_700Bold',
+        }
     },
 
     spacing: {
