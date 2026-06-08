@@ -7,6 +7,7 @@ import { Welcome } from './src/pages/welcome';
 import { Fraunces_600SemiBold, Fraunces_700Bold, useFonts } from '@expo-google-fonts/fraunces';
 import { HankenGrotesk_400Regular, HankenGrotesk_500Medium, HankenGrotesk_600SemiBold, HankenGrotesk_700Bold } from '@expo-google-fonts/hanken-grotesk';
 import { useEffect } from 'react';
+import { SingUp } from './src/pages/singup';
 
 const Container = styled.View`
   height: 100%;
@@ -36,7 +37,8 @@ export default function App() {
     <SafeAreaView>
       <ThemeProvider theme={theme}>
           <Container>
-            <Welcome/>
+            {/* <Welcome/> */}
+            <SingUp/>
           </Container>
       </ThemeProvider>
     </SafeAreaView>

@@ -59,6 +59,7 @@ export const theme = {
         fontSizeLarge: 20,
         fontSizeXL: 24,
         fontWeightRegular: '400',
+        fontWeightSemiBold: '500',
         fontWeightBold: '700',
     },
 
