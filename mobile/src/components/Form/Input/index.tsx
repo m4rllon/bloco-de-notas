@@ -4,6 +4,7 @@ import { Container, CustomInput, InputContainer, Label } from "./styles";
 import { theme } from "../../../theme";
 import { TouchableOpacity } from "react-native";
 import { useState } from "react";
+import FontAwesomeFreeSolid from "@react-native-vector-icons/fontawesome-free-solid";
 
 export function Input({type, textLabel, placeholder}:InputProps){
     const [secureTextEntryState, setSecureTextEntryState] = useState(type === TypeInput.PASSWORD);
@@ -21,9 +22,9 @@ export function Input({type, textLabel, placeholder}:InputProps){
             {type === TypeInput.PASSWORD ? 
             <TouchableOpacity
             onPress={() => setSecureTextEntryState(prev => !prev)}>
-                <EvilIcons 
-                name={secureTextEntryState ? "eye" : "eye"} 
-                size={30}
+                <FontAwesomeFreeSolid
+                name={secureTextEntryState ? "eye" : "eye-slash"}
+                size={20}
                 color={theme.colors.inkSoft}/>
             </TouchableOpacity>:<></>}
         </InputContainer>
