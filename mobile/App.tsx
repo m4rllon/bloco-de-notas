@@ -1,16 +1,20 @@
 import styled from 'styled-components/native';
 import { theme } from './src/theme';
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components/native';
 import * as SplashScreen from 'expo-splash-screen';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Welcome } from './src/pages/welcome';
 import { Fraunces_600SemiBold, Fraunces_700Bold, useFonts } from '@expo-google-fonts/fraunces';
-import { HankenGrotesk_400Regular, HankenGrotesk_500Medium, HankenGrotesk_600SemiBold, HankenGrotesk_700Bold } from '@expo-google-fonts/hanken-grotesk';
+import { 
+  HankenGrotesk_400Regular, 
+  HankenGrotesk_500Medium, 
+  HankenGrotesk_600SemiBold, 
+  HankenGrotesk_700Bold } from '@expo-google-fonts/hanken-grotesk';
 import { useEffect } from 'react';
 import { SingUp } from './src/pages/singup';
 
 const Container = styled.View`
-  height: 100%;
+  flex: 1;
   background-color: ${ props => props.theme.colors.paper};
   padding: ${ props => props.theme.spacing.xl }px;
 `
@@ -18,7 +22,7 @@ const Container = styled.View`
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  const [loaded] = useFonts({
+  const [loaded, error] = useFonts({
     Fraunces_600SemiBold,
     Fraunces_700Bold,
     HankenGrotesk_400Regular,
@@ -28,13 +32,15 @@ export default function App() {
   });
 
   useEffect(() => {
-    if (loaded) SplashScreen.hideAsync();
-  }, [loaded]);
+    if (error) console.error('Erro ao carregar fonte:', error);
+    if (loaded || error) SplashScreen.hideAsync();
+  }, [loaded, error]);
 
-  if (!loaded) return null;
+  if (!loaded && !error) return null;
 
   return (
-    <SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }}>
       <ThemeProvider theme={theme}>
           <Container>
             {/* <Welcome/> */}
@@ -42,5 +48,7 @@ export default function App() {
           </Container>
       </ThemeProvider>
     </SafeAreaView>
+    </SafeAreaProvider>
+    
   );
 }
