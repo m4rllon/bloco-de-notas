@@ -2,25 +2,19 @@ package com.notes.demo.controllers;
 
 import com.notes.demo.domain.user.AuthenticationDTO;
 import com.notes.demo.domain.user.RegisterDTO;
-import com.notes.demo.exception.custom.ParamNotBlankException;
-import com.notes.demo.exception.custom.UserAlreadyExistsException;
 import com.notes.demo.services.LoginService;
 import com.notes.demo.services.RegisterService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriBuilder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.MalformedURLException;
 
 
 @RestController
 @RequestMapping("auth")
+@CrossOrigin(origins = "*")
 public class AuthenticationController {
     @Autowired
     private RegisterService registerService;

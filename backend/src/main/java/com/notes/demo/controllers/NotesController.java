@@ -5,7 +5,6 @@ import com.notes.demo.domain.notes.ListNotesDTO;
 import com.notes.demo.domain.notes.Notes;
 import com.notes.demo.domain.notes.NotesDTO;
 import com.notes.demo.domain.notes.NotesResponse;
-import com.notes.demo.exception.custom.UserWithoutPermissionException;
 import com.notes.demo.services.NotesService;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -16,11 +15,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/notes")
+@CrossOrigin(origins = "*")
 public class NotesController {
     private final NotesService notesService;
     private final NotesModelAssembler assembler;
